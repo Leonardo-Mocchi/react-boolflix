@@ -1,10 +1,17 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import { useGlobalContext } from "./contexts/GlobalContext";
 
 function App() {
-  const [query, setQuery] = useState("");
-  const [movies, setMovies] = useState([]);
-  const [genreMap, setGenreMap] = useState({});
-  const [error, setError] = useState(null);
+  const {
+    query,
+    setQuery,
+    movies,
+    setMovies,
+    genreMap,
+    setGenreMap,
+    error,
+    setError,
+  } = useGlobalContext();
 
   const handleSearch = () => {
     const API_KEY = import.meta.env.VITE_REACT_APP_API_KEY;
@@ -53,7 +60,7 @@ function App() {
       .catch((err) => {
         console.error("Failed to fetch genres:", err.message);
       });
-  }, []);
+  }, [setGenreMap]);
 
   return (
     <div>
