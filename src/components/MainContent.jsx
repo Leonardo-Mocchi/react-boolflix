@@ -1,7 +1,9 @@
 import React from "react";
 import { useGlobalContext } from "../contexts/GlobalContext";
 
-// Mapping between language codes and country codes
+import { faStar } from '@fortawesome/free-solid-svg-icons';
+
+/* used to remap languages for countries that have different initials */
 const languageCountryFixes = {
     en: "GB", // English → United Kingdom
     hi: "IN", // Hindi → India
@@ -48,7 +50,7 @@ function getFlagEmoji(languageCode) {
 }
 
 function MainContent() {
-    const { query, setQuery, results, genreMap, error, handleSearch } = useGlobalContext();
+    const { query, setQuery, results, genreMap, error, handleSearch, FontAwesomeIcon } = useGlobalContext();
 
     return (
         <div>
@@ -63,6 +65,10 @@ function MainContent() {
             </div>
             {error && <p style={{ color: "red" }}>{error}</p>}
 
+            {results.length === 0 && !error && (
+                <p style={{ color: "gray" }}>Nessun risultato trovato.</p>
+            )}
+
             <hr />
 
             <ul>
@@ -71,14 +77,16 @@ function MainContent() {
                         <img
                             src={
                                 item.poster_path
-                                    ? `https://image.tmdb.org/t/p/w780${item.poster_path}`
-                                    : "https://placehold.co/780x439?text=No+Image"
+                                    ? `https://image.tmdb.org/t/p/w300${item.poster_path}`
+                                    : "https://placehold.co/300x450?text=Nessuna+Immagine+Trovata"
                             }
                             alt={item.title}
                         />
                         <h2 id="title">{item.title}</h2>
+                        {item.original_title !== item.title && (
+                            <p>Titolo Originale: {item.original_title}</p>
+                        )}
                         <p>Tipo: {item.type === "movie" ? "Film" : "Serie TV"}</p>
-                        <p>Titolo Originale: {item.original_title}</p>
                         <p>Anno: {item.release_date ? item.release_date.split("-")[0] : "N/A"}</p>
                         <p>
                             Lingua Originale:{" "}
@@ -86,7 +94,16 @@ function MainContent() {
                                 ? `${getFlagEmoji(item.original_language)} (${item.original_language})`
                                 : "Sconosciuta"}
                         </p>
-                        <p>Voto: {item.vote_average}</p>
+                        <p>
+                            Voto:{" "}
+                            {[...Array(5)].map((_, index) => (
+                                <FontAwesomeIcon
+                                    key={index}
+                                    icon={faStar}
+                                    style={{ color: index < Math.ceil(item.vote_average / 2) ? "gold" : "gray" }}
+                                />
+                            ))}
+                        </p>
                         <p>
                             Generi:{" "}
                             {item.genre_ids && item.genre_ids.length > 0
@@ -94,6 +111,7 @@ function MainContent() {
                                 : "N/A"}
                         </p>
                         <p>Trama: {item.overview}</p>
+
                         <hr />
                     </li>
                 ))}

@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const GlobalContext = createContext();
 
@@ -28,7 +29,6 @@ export const GlobalProvider = ({ children }) => {
                 return Promise.all([movieResponse.json(), tvResponse.json()]);
             })
             .then(([movieData, tvData]) => {
-
                 const normalizedMovies = movieData.results.map((movie) => ({
                     id: movie.id,
                     title: movie.title,
@@ -102,6 +102,7 @@ export const GlobalProvider = ({ children }) => {
                 error,
                 setError,
                 handleSearch,
+                FontAwesomeIcon,
             }}
         >
             {children}
