@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 
 function App() {
-  const [query, setQuery] = useState(""); // State for the search query
-  const [movies, setMovies] = useState([]); // State for the fetched movies
-  const [genreMap, setGenreMap] = useState({}); // State for genre mapping
-  const [error, setError] = useState(null); // State for error handling
+  const [query, setQuery] = useState("");
+  const [movies, setMovies] = useState([]);
+  const [genreMap, setGenreMap] = useState({});
+  const [error, setError] = useState(null);
 
   const handleSearch = () => {
     const API_KEY = import.meta.env.VITE_REACT_APP_API_KEY;
@@ -23,13 +23,13 @@ function App() {
         return response.json();
       })
       .then((data) => {
-        console.log("API Response:", data); // Log the full response
+        console.log("API Response:", data);
         setMovies(data.results || []);
-        setError(null); // Clear any previous errors
+        setError(null);
       })
       .catch((err) => {
         setError(err.message);
-        setMovies([]); // Clear movies on error
+        setMovies([]);
       });
   };
 
