@@ -8,6 +8,8 @@ export const GlobalProvider = ({ children }) => {
     const [results, setResults] = useState([]);
     const [genreMap, setGenreMap] = useState({});
     const [error, setError] = useState(null);
+    const [hasSearched, setHasSearched] = useState(false); // Moved from MainContent
+    const [loading, setLoading] = useState(false); // Moved from MainContent
 
     const API_KEY = import.meta.env.VITE_MOVIE_DB_API_KEY;
 
@@ -19,6 +21,9 @@ export const GlobalProvider = ({ children }) => {
 
         const movieApiUrl = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&language=it-IT&query=${encodeURIComponent(query)}`;
         const tvApiUrl = `https://api.themoviedb.org/3/search/tv?api_key=${API_KEY}&language=it-IT&query=${encodeURIComponent(query)}`;
+
+        setLoading(true); // Set loading to true
+        setHasSearched(true); // Set hasSearched to true
 
         Promise.all([fetch(movieApiUrl), fetch(tvApiUrl)])
             .then(([movieResponse, tvResponse]) => {
@@ -61,34 +66,11 @@ export const GlobalProvider = ({ children }) => {
             .catch((err) => {
                 setError(err.message);
                 setResults([]);
+            })
+            .finally(() => {
+                setLoading(false); // Set loading to false after the search is done
             });
     };
-
-    const fetchGenres = () => {
-        const genres_api_url = `https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}&language=it-IT`;
-
-        fetch(genres_api_url)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`Error: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then((data) => {
-                const genres = data.genres.reduce((map, genre) => {
-                    map[genre.id] = genre.name;
-                    return map;
-                }, {});
-                setGenreMap(genres);
-            })
-            .catch((err) => {
-                console.error("Failed to fetch genres:", err.message);
-            });
-    };
-
-    React.useEffect(() => {
-        fetchGenres();
-    }, []);
 
     return (
         <GlobalContext.Provider
@@ -102,6 +84,8 @@ export const GlobalProvider = ({ children }) => {
                 error,
                 setError,
                 handleSearch,
+                hasSearched,
+                loading,
                 FontAwesomeIcon,
             }}
         >

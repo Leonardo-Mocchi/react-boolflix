@@ -1,8 +1,13 @@
+import SearchBar from "./SearchBar";
+
 function Header() {
     return (
-        <div>
-            <h1>BoolFlix</h1>
-        </div>
+        <header className="py-3 px-5 d-flex justify-content-between">
+            <h1 className="title">
+                BoolFlix<span className="title-tm">&trade;</span>
+            </h1>
+            <SearchBar />
+        </header>
     );
 }
 

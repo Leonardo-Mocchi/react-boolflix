@@ -1,1 +1,86 @@
-@import "bootstrap"
+/* #region common */
+@import "bootstrap";
+
+:root {
+    --black_palette: #000000;
+    --dark-red_palette: #3D0000;
+    --regular-red_palette: #950101;
+    --light-red_palette: #FF0000;
+}
+
+body {
+    background-color: var(--black_palette);
+}
+
+.text_highlight {
+    color: var(--light-red_palette);
+}
+
+/* #endregion common */
+
+/* #region header */
+header {
+    background-color: var(--dark-red_palette);
+    text-align: center;
+    padding: 20px;
+}
+
+/* #region title */
+.title {
+    display: inline-block;
+    font-size: 6rem;
+    font-weight: bold;
+    color: var(--light-red_palette);
+    text-transform: uppercase;
+    letter-spacing: 0.2rem;
+    white-space: nowrap;
+    text-shadow: 0 0 10px var(--light-red_palette), 0 0 20px var(--regular-red_palette);
+    position: relative;
+}
+
+.title-tm {
+    font-size: 3rem;
+    position: absolute;
+    top: .75rem;
+    right: -2.75rem;
+}
+
+/* #endregion title */
+
+/* #region searchbar */
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-input {
+    padding: 10px;
+    font-size: 1rem;
+    border: 2px solid var(--light-red_palette);
+    border-radius: 5px;
+    outline: none;
+}
+
+.search-button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: white;
+    background-color: var(--light-red_palette);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+    background-color: var(--regular-red_palette);
+}
+
+/* #endregion searchbar */
+/* #endregion header */
+
+
+footer {
+    background-color: var(--dark-red_palette);
+}

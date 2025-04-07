@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useGlobalContext } from "../contexts/GlobalContext";
 
 import { faStar } from '@fortawesome/free-solid-svg-icons';
@@ -49,73 +49,76 @@ function getFlagEmoji(languageCode) {
         .join("");
 }
 
+
 function MainContent() {
-    const { query, setQuery, results, genreMap, error, handleSearch, FontAwesomeIcon } = useGlobalContext();
+    const {
+        results,
+        genreMap,
+        error,
+        hasSearched,
+        FontAwesomeIcon,
+    } = useGlobalContext();
 
     return (
         <div>
-            <div>
-                <input
-                    type="text"
-                    placeholder="Cerca un film..."
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                />
-                <button onClick={handleSearch}>Cerca</button>
-            </div>
-            {error && <p style={{ color: "red" }}>{error}</p>}
+            {/* Show nothing until the search is finalized */}
+            {hasSearched && (
+                <>
+                    {error && <p style={{ color: "red" }}>{error}</p>}
 
-            {results.length === 0 && !error && (
-                <p style={{ color: "gray" }}>Nessun risultato trovato.</p>
-            )}
+                    {results.length === 0 ? (
+                        <p style={{ color: "gray" }}>Nessun risultato trovato.</p>
+                    ) : (
+                        <ul>
+                            {results.map((item) => (
+                                <li key={item.id} style={{ listStyle: "none" }}>
+                                    <img
+                                        src={
+                                            item.poster_path
+                                                ? `https://image.tmdb.org/t/p/w300${item.poster_path}`
+                                                : "https://placehold.co/300x450?text=Nessuna+Immagine+Trovata"
+                                        }
+                                        alt={item.title}
+                                    />
+                                    <h2 id="title">{item.title}</h2>
+                                    {item.original_title !== item.title && (
+                                        <p>Titolo Originale: {item.original_title}</p>
+                                    )}
+                                    <p>Tipo: {item.type === "movie" ? "Film" : "Serie TV"}</p>
+                                    <p>Anno: {item.release_date ? item.release_date.split("-")[0] : "N/A"}</p>
+                                    <p>
+                                        Lingua Originale:{" "}
+                                        {item.original_language
+                                            ? `${getFlagEmoji(item.original_language)} (${item.original_language})`
+                                            : "Sconosciuta"}
+                                    </p>
+                                    <p>
+                                        Voto:{" "}
+                                        {[...Array(5)].map((_, index) => (
+                                            <FontAwesomeIcon
+                                                key={index}
+                                                icon={faStar}
+                                                style={{
+                                                    color: index < Math.ceil(item.vote_average / 2) ? "gold" : "gray",
+                                                }}
+                                            />
+                                        ))}
+                                    </p>
+                                    <p>
+                                        Generi:{" "}
+                                        {item.genre_ids && item.genre_ids.length > 0
+                                            ? item.genre_ids.map((id) => genreMap[id] || "Unknown").join(", ")
+                                            : "N/A"}
+                                    </p>
+                                    <p>Trama: {item.overview}</p>
 
-            <hr />
-
-            <ul>
-                {results.map((item) => (
-                    <li key={item.id} style={{ listStyle: "none" }}>
-                        <img
-                            src={
-                                item.poster_path
-                                    ? `https://image.tmdb.org/t/p/w300${item.poster_path}`
-                                    : "https://placehold.co/300x450?text=Nessuna+Immagine+Trovata"
-                            }
-                            alt={item.title}
-                        />
-                        <h2 id="title">{item.title}</h2>
-                        {item.original_title !== item.title && (
-                            <p>Titolo Originale: {item.original_title}</p>
-                        )}
-                        <p>Tipo: {item.type === "movie" ? "Film" : "Serie TV"}</p>
-                        <p>Anno: {item.release_date ? item.release_date.split("-")[0] : "N/A"}</p>
-                        <p>
-                            Lingua Originale:{" "}
-                            {item.original_language
-                                ? `${getFlagEmoji(item.original_language)} (${item.original_language})`
-                                : "Sconosciuta"}
-                        </p>
-                        <p>
-                            Voto:{" "}
-                            {[...Array(5)].map((_, index) => (
-                                <FontAwesomeIcon
-                                    key={index}
-                                    icon={faStar}
-                                    style={{ color: index < Math.ceil(item.vote_average / 2) ? "gold" : "gray" }}
-                                />
+                                    <hr />
+                                </li>
                             ))}
-                        </p>
-                        <p>
-                            Generi:{" "}
-                            {item.genre_ids && item.genre_ids.length > 0
-                                ? item.genre_ids.map((id) => genreMap[id] || "Unknown").join(", ")
-                                : "N/A"}
-                        </p>
-                        <p>Trama: {item.overview}</p>
-
-                        <hr />
-                    </li>
-                ))}
-            </ul>
+                        </ul>
+                    )}
+                </>
+            )}
         </div>
     );
 }
